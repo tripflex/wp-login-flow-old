@@ -29,7 +29,39 @@ class User_Activate_by_Reset {
 	public static $plugin_slug = 'user-activate-by-reset';
 	private static $instance;
 
+	public static $locale_password_set;
+	public static $locale_pending_activation_notice;
+
+	/**
+	 * @return mixed
+	 */
+	public static function getLocalePendingActivationNotice() {
+		return self::$locale_pending_activation_notice;
+	}
+
+	/**
+	 * @param mixed $locale_pending_activation_notice
+	 */
+	public static function setLocalePendingActivationNotice( $locale_pending_activation_notice ) {
+		self::$locale_pending_activation_notice = __($locale_pending_activation_notice);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public static function getLocalePasswordSet() {
+		return self::$locale_password_set;
+	}
+
+	/**
+	 * @param mixed $locale_password_set
+	 */
+	public static function setLocalePasswordSet( $locale_password_set ) {
+		self::$locale_password_set = __($locale_password_set);
+	}
+
 	public function __construct() {
+		self::setDefaultLang();
 		add_action( 'admin_notices', array( $this, 'plugin_activate' ) );
 		add_action( 'set_auth_cookie', array(
 				$this,
@@ -44,6 +76,11 @@ class User_Activate_by_Reset {
 			'add_plugin_row_meta'
 		), 10, 4 );
 
+	}
+
+	public static function setDefaultLang(){
+		self::setLocalePasswordSet('Thank you for activating your account and setting your password!');
+		self::setLocalePendingActivationNotice('<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . wp_lostpassword_url() . '">password reset</a> for a new activation code.');
 	}
 
 	public static function setActivated( $user_id, $activated = true ) {
@@ -95,7 +132,7 @@ class User_Activate_by_Reset {
 
 		if ( !User_Activate_by_Reset::isActivated( $user_id ) ) {
 			$user = new WP_Error();
-			$user->add( 'pendingactivation', __( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . wp_lostpassword_url() . '">password reset</a> for a new activation code.' ) );
+			$user->add( 'pendingactivation', self::getLocalePendingActivationNotice());
 		}
 
 		return $user;
@@ -113,8 +150,6 @@ class User_Activate_by_Reset {
 	public function set_auth_cookie( $auth_cookie, $expire, $expiration, $user_id, $scheme ) {
 		// Exit function is user is already activated
 		if ( !User_Activate_by_Reset::isActivated( $user_id ) ) {
-			$user = new WP_Error( $user_id );
-			$user->add( 'pendingactivation', __( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . site_url( self::getWpLogin() . '?action=lostpassword' ) . '">password reset</a> for a new activation code.' ) );
 			wp_redirect( home_url( self::getWpLogin() . '?checkemail=registered' ) );
 			exit();
 		}
@@ -219,12 +254,11 @@ if ( !function_exists( 'wp_password_change_notification' ) ) :
 	function wp_password_change_notification( &$user ) {
 
 		// Check is password reset was triggered by user activating account and setting password
-		$is_activated = User_Activate_by_Reset::isActivated( $user->ID );
-		// Must use === to differentiate between false and ''
-		if ( $is_activated === false ) {
+		if ( !User_Activate_by_Reset::isActivated( $user->ID ) ) {
 			User_Activate_by_Reset::setActivated( $user->ID );
-			// Exit because we don't want to send admin a notification
-			exit();
+			login_header( __( 'Password Saved' ), '<p class="message reset-pass">' . User_Activate_by_Reset::getLocalePasswordSet() . '<br>You can now <a href="' . esc_url( wp_login_url() ) . '">' . __( 'Log in' ) . '</a></p>' );
+			login_footer();
+			exit;
 		}
 
 		// send a copy of password change notification to the admin
