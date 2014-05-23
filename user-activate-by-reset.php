@@ -23,9 +23,7 @@ if ( !defined( 'USER_ACTIVATE_BY_RESET' ) ) {
 } // end if
 
 class User_Activate_by_Reset {
-	/**
-	 * @var      string
-	 */
+
 	const activation_status = 'uabr_activated';
 	public static $wp_login = 'wp-login.php';
 	public static $plugin_slug = 'user-activate-by-reset';
@@ -105,16 +103,16 @@ class User_Activate_by_Reset {
 
 	public static function isActivated( $user_id ) {
 		$status = get_user_option( self::activation_status, $user_id );
-		if ( $status == 'active' ) {
-			return true;
-		} else {
+		if ( $status == 'pending' ) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 
 	public function set_auth_cookie( $auth_cookie, $expire, $expiration, $user_id, $scheme ) {
 		// Exit function is user is already activated
-		if ( User_Activate_by_Reset::isActivated( $user_id ) === false ) {
+		if ( !User_Activate_by_Reset::isActivated( $user_id ) ) {
 			$user = new WP_Error( $user_id );
 			$user->add( 'pendingactivation', __( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . site_url( self::getWpLogin() . '?action=lostpassword' ) . '">password reset</a> for a new activation code.' ) );
 			wp_redirect( home_url( self::getWpLogin() . '?checkemail=registered' ) );
