@@ -31,34 +31,7 @@ class User_Activate_by_Reset {
 
 	public static $locale_password_set;
 	public static $locale_pending_activation_notice;
-
-	/**
-	 * @return mixed
-	 */
-	public static function getLocalePendingActivationNotice() {
-		return self::$locale_pending_activation_notice;
-	}
-
-	/**
-	 * @param mixed $locale_pending_activation_notice
-	 */
-	public static function setLocalePendingActivationNotice( $locale_pending_activation_notice ) {
-		self::$locale_pending_activation_notice = __($locale_pending_activation_notice);
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public static function getLocalePasswordSet() {
-		return self::$locale_password_set;
-	}
-
-	/**
-	 * @param mixed $locale_password_set
-	 */
-	public static function setLocalePasswordSet( $locale_password_set ) {
-		self::$locale_password_set = __($locale_password_set);
-	}
+	public static $locale_thankyou_for_reg;
 
 	public function __construct() {
 		self::setDefaultLang();
@@ -75,12 +48,24 @@ class User_Activate_by_Reset {
 			$this,
 			'add_plugin_row_meta'
 		), 10, 4 );
+		add_filter( 'wp_login_errors', array(
+			$this,
+			'wp_login_errors'
+		), 10, 2);
+	}
 
+	public function wp_login_errors( $errors, $redirect_to ){
+		if(($_GET['registration'] == 'complete') && ($_GET['activation'] == 'pending')){
+			$errors->add('registered_activate', self::getLocaleThankyouForReg(), 'message');
+		}
+
+		return $errors;
 	}
 
 	public static function setDefaultLang(){
 		self::setLocalePasswordSet('Thank you for activating your account and setting your password!');
 		self::setLocalePendingActivationNotice('<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . wp_lostpassword_url() . '">password reset</a> for a new activation code.');
+		self::setLocaleThankyouForReg('Thank you for registering.  Please check your email for your activation link.<br><br>If you do not receive the email please request a <a href="' . wp_lostpassword_url() . '">password reset</a> to have the email sent again.');
 	}
 
 	public static function setActivated( $user_id, $activated = true ) {
@@ -150,7 +135,7 @@ class User_Activate_by_Reset {
 	public function set_auth_cookie( $auth_cookie, $expire, $expiration, $user_id, $scheme ) {
 		// Exit function is user is already activated
 		if ( !User_Activate_by_Reset::isActivated( $user_id ) ) {
-			wp_redirect( home_url( self::getWpLogin() . '?checkemail=registered' ) );
+			wp_redirect( home_url( self::getWpLogin() . '?registration=complete&activation=pending' ) );
 			exit();
 		}
 
@@ -178,6 +163,48 @@ class User_Activate_by_Reset {
 	 */
 	public static function setWpLogin( $wp_login ) {
 		self::$wp_login = $wp_login;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public static function getLocaleThankyouForReg() {
+		return self::$locale_thankyou_for_reg;
+	}
+
+	/**
+	 * @param mixed $locale_thankyou_for_reg
+	 */
+	public static function setLocaleThankyouForReg( $locale_thankyou_for_reg ) {
+		self::$locale_thankyou_for_reg = __($locale_thankyou_for_reg);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public static function getLocalePendingActivationNotice() {
+		return self::$locale_pending_activation_notice;
+	}
+
+	/**
+	 * @param mixed $locale_pending_activation_notice
+	 */
+	public static function setLocalePendingActivationNotice( $locale_pending_activation_notice ) {
+		self::$locale_pending_activation_notice = __($locale_pending_activation_notice);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public static function getLocalePasswordSet() {
+		return self::$locale_password_set;
+	}
+
+	/**
+	 * @param mixed $locale_password_set
+	 */
+	public static function setLocalePasswordSet( $locale_password_set ) {
+		self::$locale_password_set = __($locale_password_set);
 	}
 
 } // End User_Activate_by_Reset Class
