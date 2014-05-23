@@ -27,6 +27,7 @@ class User_Activate_by_Reset {
 	 * @var      string
 	 */
 	const activation_status = 'uabr_activated';
+	public static $wp_login = 'wp-login.php';
 	public static $plugin_slug = 'user-activate-by-reset';
 	private static $instance;
 
@@ -115,8 +116,8 @@ class User_Activate_by_Reset {
 		// Exit function is user is already activated
 		if ( User_Activate_by_Reset::isActivated( $user_id ) === false ) {
 			$user = new WP_Error( $user_id );
-			$user->add( 'pendingactivation', __( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . site_url( 'wp-login.php?action=lostpassword' ) . '">password reset</a> for a new activation code.' ) );
-			wp_redirect( home_url( 'wp-login.php?checkemail=registered' ) );
+			$user->add( 'pendingactivation', __( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . site_url( self::getWpLogin() . '?action=lostpassword' ) . '">password reset</a> for a new activation code.' ) );
+			wp_redirect( home_url( self::getWpLogin() . '?checkemail=registered' ) );
 			exit();
 		}
 
@@ -132,7 +133,21 @@ class User_Activate_by_Reset {
 		return $plugin_meta;
 	}
 
-}
+	/**
+	 * @return string
+	 */
+	public static function getWpLogin() {
+		return self::$wp_login;
+	}
+
+	/**
+	 * @param string $wp_login
+	 */
+	public static function setWpLogin( $wp_login ) {
+		self::$wp_login = $wp_login;
+	}
+
+} // End User_Activate_by_Reset Class
 
 // Prevent Wordpress from sending default notification, instead use our custom one
 if ( !function_exists( 'wp_new_user_notification' ) ) {
@@ -164,7 +179,7 @@ if ( !function_exists( 'wp_new_user_notification' ) ) {
 		$message .= network_home_url( '/' ) . "\r\n\r\n";
 		$message .= sprintf( __( 'Username: %s' ), $user_login ) . "\r\n\r\n";
 		$message .= __( 'In order to set your password and access the site, please visit the following address:' ) . "\r\n\r\n";
-		$message .= '<' . network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . ">\r\n";
+		$message .= '<' . network_site_url( User_Activate_by_Reset::getWpLogin() . "?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . ">\r\n";
 
 		if ( is_multisite() ) {
 			$blogname = $GLOBALS['current_site']->site_name;

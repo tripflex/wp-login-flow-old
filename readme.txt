@@ -18,8 +18,17 @@ Once you activate this plugin it will instead send them an email similar to the 
 = Features =
 
 * Require Email Activation
-* Users set password after activation
-* Uses default WordPress password reset
+* Link in email standard WP password reset page to set users password
+* Send new activation/reset email by using standard password reset form
+* Display "pending activation" error if pending account attempts to login (authenticate hook)
+
+= Planned Features =
+
+* Customize default WordPress login (color, logo, etc)
+* Custom activation email
+* Custom pending activation notice
+* Custom wp-login.php permalinks
+* Admin notification options
 
 [Read more about User Activate by Reset](https://github.com/tripflex/user-activate-by-reset).
 
