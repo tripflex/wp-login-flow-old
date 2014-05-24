@@ -1,7 +1,7 @@
 === User Activate by Reset ===
 Contributors: tripflex
 Donate link: https://www.gittip.com/tripflex
-Tags: user, register, activate, reset, password, login, force, email, id, notification, registration
+Tags: user, register, activate, reset, password, login, force, email, id, notification, registration, jobify, wp-job-manager, wp job manager
 Requires at least: 3.8
 Tested up to: 3.9.1
 Stable tag: 1.2.0
@@ -17,6 +17,7 @@ Once you activate this plugin it will instead send them an email similar to the 
 
 = Features =
 
+* Customized responsive wp-login.php page
 * Require Email Activation
 * Link in email standard WP password reset page to set users password
 * Send new activation/reset email by using standard password reset form
