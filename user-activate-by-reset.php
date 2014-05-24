@@ -45,6 +45,24 @@ class User_Activate_by_Reset {
 		add_action( 'authenticate', array( $this, 'login_check_activation' ), 30, 3 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_row_meta' ), 10, 4 );
 		add_filter( 'wp_login_errors', array( $this, 'wp_login_errors' ), 10, 2 );
+		add_action( 'login_enqueue_scripts', array($this, 'login_css') );
+		// Remove Jobify password signup field
+		add_filter( 'register_form_fields', array($this, 'remove_pw_field') );
+	}
+
+	public function login_css () {
+
+		?>
+		<style type="text/css">
+	        @media (max-width: 1200px) { #login { width: 90% !important; } }
+	        @media (min-width: 1200px) { #login { width: 50% !important; } }
+	    </style>
+	<?php
+	}
+
+	public function remove_pw_field( $fields ){
+		unset($fields['creds']['password']);
+		return $fields;
 	}
 
 	public static function setDefaultLang () {
