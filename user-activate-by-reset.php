@@ -384,3 +384,10 @@ endif;
 register_deactivation_hook( __FILE__, array( 'User_Activate_by_Reset', 'plugin_deactivate' ) );
 
 add_action( 'init', array( 'User_Activate_by_Reset', 'instance' ) );
+
+add_action( 'init', function(){
+
+	add_rewrite_rule( '^login/?', 'wp-loginzzz.php', 'top' );
+	add_rewrite_rule( '^activate/([^/]*)/([^/]*)/?', 'wp-login.php?action=rp&key=$matches[2]&login=$matches[1]', 'top' );
+	flush_rewrite_rules();
+});
