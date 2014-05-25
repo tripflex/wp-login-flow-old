@@ -13,14 +13,16 @@
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 // Set the version of this plugin
-if ( ! defined( 'USER_ACTIVATE_BY_RESET' ) ) {
-	define( 'USER_ACTIVATE_BY_RESET', '1.0.0' );
-}
+if ( ! defined( 'USER_ACTIVATE_BY_RESET' ) ) { define( 'USER_ACTIVATE_BY_RESET', '1.0.0' ); }
+
+// Define plugin URL and path
+define( 'USER_ACTIVATE_BY_RESET_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
+define( 'USER_ACTIVATE_BY_RESET_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+
+include_once( USER_ACTIVATE_BY_RESET_PLUGIN_DIR . '/options.php' );
 
 /**
  * Class User_Activate_by_Reset
@@ -30,6 +32,7 @@ class User_Activate_by_Reset {
 
 	const version = '1.0.0';
 	const activation_status = 'uabr_activated';
+	const plugin_slug = 'user-activate-by-reset';
 	public static  $wp_login    = 'wp-login.php';
 	public static  $plugin_slug = 'user-activate-by-reset';
 	public static  $locale_password_set;
@@ -48,6 +51,8 @@ class User_Activate_by_Reset {
 		add_action( 'login_enqueue_scripts', array($this, 'login_css') );
 		// Remove Jobify password signup field
 		add_filter( 'register_form_fields', array($this, 'remove_pw_field') );
+		// Activation Options Page
+		if ( is_admin() ) $my_settings_page = new MySettingsPage();
 	}
 
 	public function login_css () {
@@ -384,10 +389,3 @@ endif;
 register_deactivation_hook( __FILE__, array( 'User_Activate_by_Reset', 'plugin_deactivate' ) );
 
 add_action( 'init', array( 'User_Activate_by_Reset', 'instance' ) );
-
-add_action( 'init', function(){
-
-	add_rewrite_rule( '^login/?', 'wp-loginzzz.php', 'top' );
-	add_rewrite_rule( '^activate/([^/]*)/([^/]*)/?', 'wp-login.php?action=rp&key=$matches[2]&login=$matches[1]', 'top' );
-	flush_rewrite_rules();
-});
