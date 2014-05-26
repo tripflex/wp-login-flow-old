@@ -22,6 +22,8 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 			add_rewrite_rule( '^login/?', 'wp-login.php', 'top' );
 			add_rewrite_rule( '^activate/([^/]*)/([^/]*)/', 'wp-login.php?action=rp&key=$2&login=$1', 'top' );
 			//	$wp_rewrite->flush_rules(false);
+
+			require_once( 'piklist/piklist.php' );
 		} );
 		flush_rewrite_rules();
 	}
@@ -38,7 +40,9 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 	public static function submenu () {
 
-		add_submenu_page( 'users.php', __( 'Manage Activation Options', User_Activate_by_Reset::plugin_slug ), __( 'Activation', User_Activate_by_Reset::plugin_slug ), 'manage_options', 'uabr_options', array( 'User_Activate_by_Reset_Options', 'get_instance' ) );
+		add_submenu_page( 'users.php', __( 'Manage Activation Options', User_Activate_by_Reset::plugin_slug ), __( 'Activation', User_Activate_by_Reset::plugin_slug ), 'manage_options', 'uabr_options', array( 'User_Activate_by_Reset_Options',
+		                                                                                                                                                                                                         'get_instance'
+			) );
 	}
 
 	public function output_html () {
@@ -110,6 +114,23 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 }
 
+add_filter( 'piklist_admin_pages', 'piklist_uabr_admin_page' );
+function piklist_uabr_admin_page ( $pages ) {
+
+	$pages[] = array( 'page_title' => __( 'Activation Settings' ),
+	                  'menu_title' => __( 'Activation Settings' ),
+	                  'capability' => 'manage_options',
+	                  'sub_menu' => 'users.php',
+	                  'menu_slug' => 'uabr-settings',
+	                  'setting' => 'uabr_rewrite_settings',
+	                  'default_tab' => 'Rewrite',
+	                  'single_line' => true,
+	                  'save_text' => 'Save Activation Settings'
+	);
+
+	return $pages;
+}
+
 class MySettingsPage {
 	/**
 	 * Holds the values to be used in the fields callbacks
@@ -131,7 +152,8 @@ class MySettingsPage {
 	public function add_plugin_page () {
 
 		// This page will be under "Settings"
-		add_options_page( 'Activation Settings', 'Activation Settings', 'manage_options', 'uabr-setting-admin', array( $this, 'create_admin_page' ) );
+				add_options_page( 'Activation Settingz', 'Activation Settingz', 'manage_options', 'uabr-setting-admin', array( $this, 'create_admin_page' ) );
+		//		add_submenu_page( 'users.php', __( 'Manage Activation Options', User_Activate_by_Reset::plugin_slug ), __( 'Activation', User_Activate_by_Reset::plugin_slug ), 'manage_options', 'uabr_options', array( 'User_Activate_by_Reset_Options', 'get_instance' ) );
 	}
 
 	/**
@@ -216,6 +238,7 @@ class MySettingsPage {
 
 		echo '<input name="uabr_settings[enable_login_rewrite]" id="enable_login_rewrite" type="checkbox" value="1" class="code" ' . checked( 1, $this->options['enable_login_rewrite'], false ) . ' />';
 	}
+
 	/**
 	 * Get the settings option array and print one of its values
 	 */

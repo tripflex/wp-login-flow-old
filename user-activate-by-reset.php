@@ -7,6 +7,7 @@
  * Contributors: Myles McNamara
  * Author URI:  http://smyl.es
  * Version:     1.0.0
+ * Plugin Type: Piklist
  * Text Domain: user_activate_by_reset
  * GitHub Plugin URI: tripflex/user-activate-by-reset
  * GitHub Branch:   master
