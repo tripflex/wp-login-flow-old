@@ -12,35 +12,7 @@ $lostpw_rewrite_as = $current_settings['lostpw_rewrite_as'];
 piklist( 'field', array(
 	'type'  => 'html',
 	'label' => '',
-	'value' => "
-		<p>Below you will be able to configure custom rewrite rules for the default <code>wp-login.php</code> page.</p>
-		<script>
-			jQuery(function($){
-				var home_url = $('.uabr_rewrite_settings_login_preview').val();
-				var login_url_orig = $('#uabr_rewrite_settings_login_rewrite').val();
-				var lostpw_url_orig = $('#uabr_rewrite_settings_lostpw_rewrite').val();
-
-				function updateLoginRewritePreview(new_url, which){
-					var login_url = home_url + new_url;
-					$('.uabr_rewrite_settings_' + which + '_preview').val(login_url);
-				}
-
-				updateLoginRewritePreview(login_url_orig, 'login');
-				updateLoginRewritePreview(lostpw_url_orig, 'lostpw');
-
-				$('.uabr_rewrite_preview').attr('disabled', 'disabled');
-
-				$('#uabr_rewrite_settings_login_rewrite').on('input', function(){
-					updateLoginRewritePreview(this.value, 'login');
-				});
-
-				$('#uabr_rewrite_settings_lostpw_rewrite').on('input', function(){
-					updateLoginRewritePreview(this.value, 'lostpw');
-				});
-
-			});
-		</script>
-	"
+	'value' => '<p>Below you will be able to configure custom rewrite rules for the default <code>wp-login.php</code> page.</p>'
 ) );
 
 // Login Rewrite
@@ -65,17 +37,6 @@ piklist( 'field', array(
 	)
 ) );
 
-piklist( 'field', array(
-	'type'        => 'text',
-	'field'       => 'login_preview',
-	'value'       => home_url('/'),
-	'label'       => 'Login Preview',
-    'attributes' => array(
-	    'class' => 'large-text uabr_rewrite_preview'
-        )
-	)
-);
-
 // Login Fields
 piklist( 'field', array(
 	'type'    => 'checkbox',
@@ -95,16 +56,6 @@ piklist( 'field', array(
 	)
 ) );
 
-piklist( 'field', array(
-	'type'       => 'text',
-	'field'      => 'lostpw_preview',
-	'value'      => home_url( '/' ),
-	'label'      => 'Lost Password Preview',
-	'attributes' => array(
-		'class' => 'large-text uabr_rewrite_preview'
-	)
-) );
-
 // Register Fields
 piklist( 'field', array(
 	'type'        => 'checkbox',
@@ -121,15 +72,5 @@ piklist( 'field', array(
 			'value' => 'register',
 			'embed' => false
 		)
-	)
-) );
-
-piklist( 'field', array(
-	'type'       => 'text',
-	'field'      => 'register_preview',
-	'value'      => home_url( '/' ),
-	'label'      => 'Lost Password Preview',
-	'attributes' => array(
-		'class' => 'large-text uabr_rewrite_preview'
 	)
 ) );
