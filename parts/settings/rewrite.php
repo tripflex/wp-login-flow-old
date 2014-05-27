@@ -1,13 +1,10 @@
 <?php
 /*
 Title: Custom Rewrite Settings
-Setting: uabr_rewrite_settings
+Setting: uabr_options
 Order: 10
 Tab: Rewrite
 */
-
-$current_settings = get_option('uabr_rewrite_settings');
-$lostpw_rewrite_as = $current_settings['lostpw_rewrite_as'];
 
 piklist( 'field', array(
 	'type'  => 'html',

@@ -14,10 +14,14 @@
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) { exit; }
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 // Set the version of this plugin
-if ( ! defined( 'USER_ACTIVATE_BY_RESET' ) ) { define( 'USER_ACTIVATE_BY_RESET', '1.0.0' ); }
+if ( ! defined( 'USER_ACTIVATE_BY_RESET' ) ) {
+	define( 'USER_ACTIVATE_BY_RESET', '1.0.0' );
+}
 
 // Define plugin URL and path
 define( 'USER_ACTIVATE_BY_RESET_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
@@ -31,15 +35,31 @@ include_once( USER_ACTIVATE_BY_RESET_PLUGIN_DIR . '/options.php' );
  */
 class User_Activate_by_Reset {
 
-	const version = '1.0.0';
+	const version           = '1.0.0';
 	const activation_status = 'uabr_activated';
-	const plugin_slug = 'user-activate-by-reset';
+	const plugin_slug       = 'user-activate-by-reset';
 	public static  $wp_login    = 'wp-login.php';
 	public static  $plugin_slug = 'user-activate-by-reset';
 	public static  $locale_password_set;
 	public static  $locale_pending_activation_notice;
 	public static  $locale_thankyou_for_reg;
+	public static  $mail_from;
+	public static  $mail_from_name;
 	private static $instance;
+	private static $domain;
+
+	/**
+	 * @return mixed
+	 */
+	public static function getDomain () {
+
+		if(!self::$domain){
+			$parse = parse_url(home_url());
+			self::$domain = $parse['host'];
+		}
+
+		return self::$domain;
+	}
 
 	public function __construct () {
 
@@ -49,26 +69,13 @@ class User_Activate_by_Reset {
 		add_action( 'authenticate', array( $this, 'login_check_activation' ), 30, 3 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_row_meta' ), 10, 4 );
 		add_filter( 'wp_login_errors', array( $this, 'wp_login_errors' ), 10, 2 );
-		add_action( 'login_enqueue_scripts', array($this, 'login_css') );
+		add_action( 'login_enqueue_scripts', array( $this, 'login_css' ) );
 		// Remove Jobify password signup field
-		add_filter( 'register_form_fields', array($this, 'remove_pw_field') );
-		// Activation Options Page
-		if ( is_admin() ) $my_settings_page = new MySettingsPage();
-	}
+		add_filter( 'register_form_fields', array( $this, 'remove_pw_field' ) );
+		add_filter( 'wp_mail_from', array( $this, 'mail_from' ) );
+		add_filter( 'wp_mail_from_name', array( $this, 'mail_from_name' ) );
+		User_Activate_by_Reset_Options::get_instance();
 
-	public function login_css () {
-
-		?>
-		<style type="text/css">
-	        @media (max-width: 1200px) { #login { width: 90% !important; } }
-	        @media (min-width: 1200px) { #login { width: 50% !important; } }
-	    </style>
-	<?php
-	}
-
-	public function remove_pw_field( $fields ){
-		unset($fields['creds']['password']);
-		return $fields;
 	}
 
 	public static function setDefaultLang () {
@@ -79,31 +86,35 @@ class User_Activate_by_Reset {
 	}
 
 	/**
-	 * @param mixed $locale_password_set
-	 * @since 1.0.0
+	 * @return mixed
 	 */
-	public static function setLocalePasswordSet ( $locale_password_set ) {
+	public static function getMailFrom () {
 
-		self::$locale_password_set = __( $locale_password_set );
+		return self::$mail_from;
 	}
 
 	/**
-	 * @param mixed $locale_pending_activation_notice
-	 *
+	 * @param mixed $mail_from
 	 */
-	public static function setLocalePendingActivationNotice ( $locale_pending_activation_notice ) {
+	public static function setMailFrom ( $mail_from ) {
 
-		self::$locale_pending_activation_notice = __( $locale_pending_activation_notice );
+		self::$mail_from = $mail_from;
 	}
 
-	// Prevent auto login or other login forms from allowing user to login when pending activation
+	/**
+	 * @return mixed
+	 */
+	public static function getMailFromName () {
+
+		return self::$mail_from_name;
+	}
 
 	/**
-	 * @param mixed $locale_thankyou_for_reg
+	 * @param mixed $mail_from_name
 	 */
-	public static function setLocaleThankyouForReg ( $locale_thankyou_for_reg ) {
+	public static function setMailFromName ( $mail_from_name ) {
 
-		self::$locale_thankyou_for_reg = __( $locale_thankyou_for_reg );
+		self::$mail_from_name = $mail_from_name;
 	}
 
 	/**
@@ -161,6 +172,54 @@ class User_Activate_by_Reset {
 	}
 
 	/**
+	 * @param mixed $locale_password_set
+	 *
+	 * @since 1.0.0
+	 */
+	public static function setLocalePasswordSet ( $locale_password_set ) {
+
+		self::$locale_password_set = __( $locale_password_set );
+	}
+
+	// Prevent auto login or other login forms from allowing user to login when pending activation
+
+	public function mail_from ( $email ) {
+
+		self::setMailFrom( $email );
+
+		return $email;
+	}
+
+	public function mail_from_name ( $name ) {
+
+		self::setMailFromName( $name );
+
+		return $name;
+	}
+
+	public function login_css () {
+
+		?>
+		<style type="text/css">
+	        @media (max-width: 1200px) {
+		        #login { width: 90% !important; }
+		        }
+
+	        @media (min-width: 1200px) {
+		        #login { width: 50% !important; }
+		        }
+	    </style>
+	<?php
+	}
+
+	public function remove_pw_field ( $fields ) {
+
+		unset( $fields['creds']['password'] );
+
+		return $fields;
+	}
+
+	/**
 	 * @param $errors
 	 * @param $redirect_to
 	 *
@@ -181,6 +240,14 @@ class User_Activate_by_Reset {
 	public static function getLocaleThankyouForReg () {
 
 		return self::$locale_thankyou_for_reg;
+	}
+
+	/**
+	 * @param mixed $locale_thankyou_for_reg
+	 */
+	public static function setLocaleThankyouForReg ( $locale_thankyou_for_reg ) {
+
+		self::$locale_thankyou_for_reg = __( $locale_thankyou_for_reg );
 	}
 
 	/**
@@ -232,6 +299,15 @@ class User_Activate_by_Reset {
 	public static function getLocalePendingActivationNotice () {
 
 		return self::$locale_pending_activation_notice;
+	}
+
+	/**
+	 * @param mixed $locale_pending_activation_notice
+	 *
+	 */
+	public static function setLocalePendingActivationNotice ( $locale_pending_activation_notice ) {
+
+		self::$locale_pending_activation_notice = __( $locale_pending_activation_notice );
 	}
 
 	/**
