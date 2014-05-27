@@ -163,11 +163,16 @@ class MySettingsPage {
 
 		// Set class property
 		$this->options = get_option( 'uabr_settings' );
+		$test = get_option( 'uabr_rewrite_settings' );
 		?>
 		<div class="wrap">
             <?php screen_icon(); ?>
 			<h2>User Activation Settings</h2>
 			<hr/>
+			<?php
+			echo($test['login_rewrite_as']);
+			print_r(maybe_unserialize('a:5:{s:20:"enable_login_rewrite";a:1:{i:0;s:6:"enable";}s:18:"login_rewrite_slug";s:9:"login/now";s:21:"enable_lostpw_rewrite";a:1:{i:0;s:6:"enable";}s:19:"lostpw_rewrite_slug";s:12:"fgadsfgafgas";s:16:"login_rewrite_as";s:14:"loginzasdszzzz";}'));
+			?>
 			<div class="postbox">
 				<div class="handlediv" title="Click to toggle"><br></div>
 				<div class="inside">
