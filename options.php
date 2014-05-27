@@ -48,7 +48,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 			'menu_slug'   => 'uabr-settings',
 			'setting'     => 'uabr_options',
 			'single_line' => false,
-			'default_tab' => 'General',
+			'default_tab' => 'Style',
 			'save_text'   => 'Save Activation Settings'
 		);
 
