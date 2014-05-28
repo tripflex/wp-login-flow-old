@@ -2,7 +2,6 @@
 /*
 Title: Email Customization
 Setting: uabr_options
-Order: 5
 Tab: Email
 */
 

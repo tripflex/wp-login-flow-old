@@ -2,7 +2,6 @@
 /*
 Title: Custom Rewrite Settings
 Setting: uabr_options
-Order: 10
 Tab: Rewrite
 */
 
@@ -18,6 +17,7 @@ piklist( 'field', array(
 	'field'   => 'enable_login',
 	'help'    => 'Enable this setting to rewrite the default login URL',
 	'label'   => 'Login',
+	'description' => 'Default: <code>' . home_url() . '/wp-login.php</code>',
 	'attributes' => array(
 		'class' => 'uabr_rewrite_input'
 	),
@@ -40,6 +40,7 @@ piklist( 'field', array(
 	'field'   => 'enable_lostpw',
 	'help'    => 'Enable this setting to rewrite the default lost password URL',
 	'label'   => 'Lost Password',
+	'description' => 'Default: <code>' . home_url() . '/wp-login.php?action=lostpassword</code>',
 	'choices' => array(
 		'enable' => 'Enable<br><code>' . home_url() . '/</code>[field=lostpw_rewrite]'
 	),
@@ -58,7 +59,8 @@ piklist( 'field', array(
 	'type'        => 'checkbox',
 	'field'       => 'enable_register',
 	'help'        => 'Enable this setting to rewrite the default register URL',
-	'label'       => 'Lost Password',
+	'label'       => 'Register',
+	'description' => 'Default: <code>' . home_url() . '/wp-login.php</code>',
 	'choices'     => array(
 		'enable' => 'Enable<br><code>' . home_url() . '/</code>[field=register_rewrite]'
 	),
@@ -67,6 +69,26 @@ piklist( 'field', array(
 			'type'  => 'text',
 			'field' => 'register_rewrite',
 			'value' => 'register',
+			'embed' => false
+		)
+	)
+) );
+
+// Register Fields
+piklist( 'field', array(
+	'type'    => 'checkbox',
+	'field'   => 'enable_activate',
+	'help'    => 'Enable this setting to rewrite the default activate URL',
+	'description' => 'Default: <code>' . home_url() . '/wp-login.php?action=rp&key=sampleactivationcode&login=users@email.com</code>.  ',
+	'label'   => 'Activate',
+	'choices' => array(
+		'enable' => 'Enable<br><code>' . home_url() . '/</code>[field=activate_rewrite]<code>/users@email.com/sampleactivationcode</code>'
+	),
+	'fields'  => array(
+		array(
+			'type'  => 'text',
+			'field' => 'activate_rewrite',
+			'value' => 'activate',
 			'embed' => false
 		)
 	)
