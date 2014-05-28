@@ -27,7 +27,7 @@ if ( ! defined( 'USER_ACTIVATE_BY_RESET' ) ) {
 define( 'USER_ACTIVATE_BY_RESET_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'USER_ACTIVATE_BY_RESET_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
-include_once( USER_ACTIVATE_BY_RESET_PLUGIN_DIR . '/options.php' );
+require_once( USER_ACTIVATE_BY_RESET_PLUGIN_DIR . '/options.php' );
 
 /**
  * Class User_Activate_by_Reset
