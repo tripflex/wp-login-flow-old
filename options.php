@@ -10,24 +10,11 @@
  * @Last                Modified time: 24 18 10
  */
 
-if ( ! function_exists( '_log' ) ) {
-	function _log ( $message ) {
-
-		if ( WP_DEBUG === true ) {
-			if ( is_array( $message ) || is_object( $message ) ) {
-				error_log( print_r( $message, true ) );
-			} else {
-				error_log( $message );
-			}
-		}
-	}
-}
-
 class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
+	private static $debug = true;
 	private static $instance;
 	private static $options;
-	public         $test = 0;
 
 	function __construct () {
 
@@ -40,7 +27,8 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		add_filter( 'register_form_fields', array( $this, 'remove_pw_field' ) );
 		add_action( 'update_option_uabr_options', array( $this, 'options_updated' ), 30, 2 );
 
-		add_action( 'admin_init', array( $this, 'set_rewrite_rules' ) );
+		add_action( 'admin_init', array( $this, 'preserve_rewrite_rules' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'death_to_heartbeat' ), 1 );
 
 	}
 
@@ -54,40 +42,65 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		return self::$instance;
 	}
 
-	public function log($some_data){
-		_log( $_SERVER['SCRIPT_FILENAME'] );
-		_log( $_SERVER['QUERY_STRING'] );
-		_log( $some_data );
+	public function options_updated ( $old_value, $new_value ) {
+
+		$this->log( 'Options Updated!', 'Options', false );
+		$this->parse_options_updated( $new_value );
 	}
 
-	public function options_updated ( $old_value, $new_value ) {
-		_log($new_value);
-		$this->set_rewrite_rules( $new_value, true );
+	public function log ( $message, $title = NULL, $spacer = true ) {
+
+		global $pagenow;
+		if(!$pagenow){
+			$filename = $_SERVER['SCRIPT_FILENAME'];
+		} else {
+			$filename = $pagenow;
+		}
+
+		if ( self::$debug && WP_DEBUG === true) {
+			$query    = $_SERVER['QUERY_STRING'];
+			$date_ident = date( 's' );
+			$date_title = $date_ident . ' - ';
+			$plugin_title = '[' . User_Activate_by_Reset::plugin_page . ']:' . $date_title;
+
+			if ( $title ) $title = '{' . strtolower($title) . '}> ';
+			if ( $spacer ) error_log( $plugin_title . '   ---   ' . $date_ident . '   ---   ' );
+			if ( $filename ) error_log( $plugin_title . ':: {file/page}> '  . $filename );
+			if ( $query ) error_log( $plugin_title . ':: {args}> ' . $query );
+
+			if ( is_array( $message ) || is_object( $message ) ) {
+				error_log( $plugin_title . $title . 'Array/Object:' );
+				error_log( print_r( $message, true ) );
+			} else {
+				error_log( $plugin_title . $title . strtolower($message) );
+			}
+		}
+	}
+
+	public function parse_options_updated ( $options ) {
+
+		$this->log( 'Parsing Options' );
+		$this->set_rewrite_rules( $options );
 		flush_rewrite_rules();
 	}
 
-	public function set_rewrite_rules ( $options = NULL, $force = false ) {
+	public function set_rewrite_rules ( $options = NULL ) {
 
-		if(!($_GET['page'] == 'uabr-settings' && $_GET['tab'] == 'rewrite') || $force = true) {
+		$this->log( 'Setting rewrite rules!', 'Settings', false );
 
-			$this->log('Setting rewrite rules! Was I forced?:' . $force);
+		if ( ! $options ) $options = self::get_options();
 
-			if ( ! $options ) $options = self::get_options();
-
-			if ( $options['enable_login'][0] && $options['login_rewrite'] ) {
-				add_rewrite_rule( $options['login_rewrite'] . '/?', 'wp-login.php', 'top' );
-			}
-			if ( $options['enable_lostpw'][0] && $options['lostpw_rewrite'] ) {
-				add_rewrite_rule( $options['lostpw_rewrite'] . '/?', 'wp-login.php?action=lostpassword', 'top' );
-			}
-			if ( $options['enable_activate'][0] && $options['activate_rewrite'] ) {
-				add_rewrite_rule( $options['activate_rewrite'] . '/([^/]*)/([^/]*)/', 'wp-login.php?action=rp&key=$2&login=$1', 'top' );
-			}
-			if ( $options['enable_register'][0] && $options['register_rewrite'] ) {
-				add_rewrite_rule( $options['register_rewrite'] . '/?', 'wp-login.php?action=register', 'top' );
-			}
-		} else {
-			$this->log('uh oh! im it!');
+		if ( $options['enable_login'][0] && $options['login_rewrite'] ) {
+			add_rewrite_rule( $options['login_rewrite'] . '/?', 'wp-login.php', 'top' );
+		}
+		if ( $options['enable_lostpw'][0] && $options['lostpw_rewrite'] ) {
+			add_rewrite_rule( $options['lostpw_rewrite'] . '/?', 'wp-login.php?action=lostpassword', 'top' );
+		}
+		if ( $options['enable_activate'][0] && $options['activate_rewrite'] ) {
+			add_rewrite_rule( $options['activate_rewrite'] . '/([^/]*)/([^/]*)/', 'wp-login.php?action=rp&key=$2&login=$1', 'top' );
+		}
+		if ( $options['enable_register'][0] && $options['register_rewrite'] ) {
+			add_rewrite_rule( $options['register_rewrite'] . '/?', 'wp-login.php?action=register', 'top' );
 		}
 	}
 
@@ -110,6 +123,22 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		self::$options = $options;
 	}
 
+	public function death_to_heartbeat () {
+
+		global $pagenow;
+		//		$this->log('Death to Heartbeat @ ' . $pagenow);
+		if ( $pagenow == 'users.php' && $_GET['page'] == parent::plugin_page ) wp_deregister_script( 'heartbeat' );
+	}
+
+	public function preserve_rewrite_rules () {
+
+		global $pagenow;
+		$this->log(__FUNCTION__, 'function');
+		if ( ! ( $_GET['page'] == parent::plugin_page && $_GET['tab'] == 'rewrite' ) && ! ( $pagenow == 'options.php' ) && ! ( $pagenow == 'users.php' ) ) {
+			$this->set_rewrite_rules();
+		}
+	}
+
 	public function remove_pw_field ( $fields ) {
 
 		$options = self::get_options();
@@ -126,7 +155,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 			'menu_title'  => __( 'Activation Settings' ),
 			'capability'  => 'manage_options',
 			'sub_menu'    => 'users.php',
-			'menu_slug'   => 'uabr-settings',
+			'menu_slug'   => parent::plugin_page,
 			'setting'     => 'uabr_options',
 			'single_line' => false,
 			'default_tab' => 'General',

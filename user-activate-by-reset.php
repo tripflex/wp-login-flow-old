@@ -37,6 +37,7 @@ class User_Activate_by_Reset {
 
 	const version           = '1.0.0';
 	const activation_status = 'uabr_activated';
+	const plugin_page       = 'uabr-settings';
 	const plugin_slug       = 'user-activate-by-reset';
 	public static  $wp_login    = 'wp-login.php';
 	public static  $plugin_slug = 'user-activate-by-reset';
@@ -48,19 +49,6 @@ class User_Activate_by_Reset {
 	private static $instance;
 	private static $domain;
 
-	/**
-	 * @return mixed
-	 */
-	public static function getDomain () {
-
-		if(!self::$domain){
-			$parse = parse_url(home_url());
-			self::$domain = $parse['host'];
-		}
-
-		return self::$domain;
-	}
-
 	public function __construct () {
 
 		self::setDefaultLang();
@@ -69,7 +57,6 @@ class User_Activate_by_Reset {
 		add_action( 'authenticate', array( $this, 'login_check_activation' ), 30, 3 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_plugin_row_meta' ), 10, 4 );
 		add_filter( 'wp_login_errors', array( $this, 'wp_login_errors' ), 10, 2 );
-		// Remove Jobify password signup field
 		add_filter( 'wp_mail_from', array( $this, 'mail_from' ) );
 		add_filter( 'wp_mail_from_name', array( $this, 'mail_from_name' ) );
 		User_Activate_by_Reset_Options::get_instance();
@@ -81,6 +68,19 @@ class User_Activate_by_Reset {
 		self::setLocalePasswordSet( 'Thank you for activating your account and setting your password!' );
 		self::setLocalePendingActivationNotice( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . wp_lostpassword_url() . '">password reset</a> for a new activation code.' );
 		self::setLocaleThankyouForReg( 'Thank you for registering.  Please check your email for your activation link.<br><br>If you do not receive the email please request a <a href="' . wp_lostpassword_url() . '">password reset</a> to have the email sent again.' );
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public static function getDomain () {
+
+		if ( ! self::$domain ) {
+			$parse        = parse_url( home_url() );
+			self::$domain = $parse['host'];
+		}
+
+		return self::$domain;
 	}
 
 	/**
@@ -237,8 +237,7 @@ class User_Activate_by_Reset {
 
 		if ( strpos( $username, '@' ) ) {
 			$user_data = get_user_by( 'email', trim( $username ) );
-		}
-		else {
+		} else {
 			$login     = trim( $username );
 			$user_data = get_user_by( 'login', $login );
 		}
@@ -263,8 +262,7 @@ class User_Activate_by_Reset {
 		$status = get_user_option( self::activation_status, $user_id );
 		if ( $status == 'pending' ) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
@@ -381,8 +379,7 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 
 		if ( is_multisite() ) {
 			$blogname = $GLOBALS['current_site']->site_name;
-		}
-		else
+		} else
 			// The blogname option is escaped with esc_html on the way into the database in sanitize_option
 			// we want to reverse this for the plain text arena of emails.
 		{
@@ -399,8 +396,7 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 		$title = sprintf( __( '[%s] Account Activation' ), $blogname );
 		if ( ! wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
