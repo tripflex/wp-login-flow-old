@@ -1,6 +1,6 @@
 <?php
 /*
-Title: Custom Rewrite Settings
+Title: <h2>Custom Rewrite Settings</h2>
 Setting: uabr_options
 Tab: Rewrite
 */

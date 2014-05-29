@@ -1,8 +1,9 @@
 <?php
 /*
-Title: Email Customization
+Title: <h1>Email Customization</h1>
 Setting: uabr_options
 Tab: Email
+Order: 0
 */
 
 // From Name
@@ -46,40 +47,5 @@ piklist( 'field', array(
 				'class' => 'regular-text'
 			),
 		)
-	)
-) );
-
-piklist( 'field', array(
-	'type'           => 'checkbox',
-	'field'          => 'product_description',
-	'label'          => __( 'Product Description' ),
-	'description'    => __( 'Please describe this product' ),
-	'help'           => __( 'Some help on this field.' ),
-	'scope'          => 'post_meta',
-	'field_template' => 'post_meta_custom',
-	'value'          => 'my default',
-	'capability'     => 'manage_options',
-	'add_more'       => false,
-	'choices'        => array(
-		'first'  => 'First Choice',
-		'second' => 'Second Choice',
-		'third'  => 'Third Choice'
-	),
-	'list'           => true,
-	'position'       => 'wrap',
-	'serialize'      => 'false',
-	'attributes'     => array(
-		'title'       => 'field-demos',
-		'alt'         => 'field-demos',
-		'tabindex'    => '1',
-		'class'       => 'small-text',
-		'placeholder' => 'Placeholder text',
-		'cols'        => 6,
-		'columns'     => 6,
-		'rows'        => 3,
-		'size'        => 6,
-		'step'        => 15,
-		'min'         => 5,
-		'onfocus'     => "if(this.value == 'default_value') { this.value = ''; }"
 	)
 ) );

@@ -25,6 +25,8 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		add_filter( 'piklist_admin_pages', array( $this, 'settings_page' ) );
 		add_action( 'login_enqueue_scripts', array( $this, 'login_css' ) );
 		add_filter( 'register_form_fields', array( $this, 'remove_pw_field' ) );
+		add_filter( 'login_headerurl', array( $this, 'change_logo_url' ) );
+		add_filter( 'login_headerurl', array( $this, 'change_logo_url_title' ) );
 		add_action( 'update_option_uabr_options', array( $this, 'options_updated' ), 30, 2 );
 
 		add_action( 'admin_init', array( $this, 'preserve_rewrite_rules' ) );
@@ -42,6 +44,24 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		}
 
 		return self::$instance;
+	}
+
+	public function change_logo_url ($default_url){
+		$custom_url = $this->get_option('login_logo_url');
+		if($custom_url) $default_url = $custom_url;
+		return $default_url;
+	}
+
+	public function change_logo_url_title ($default_url_title){
+		$custom_url_title = $this->get_option('login_logo_url_title');
+		if($custom_url_title) $default_url_title = $custom_url_title;
+		return $default_url_title;
+	}
+
+	public function get_option($option){
+		$option_data = self::get_options();
+
+		return $option_data[$option];
 	}
 
 	public function remove_menus(){
@@ -179,8 +199,6 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 		$options = self::get_options();
 
-		$this->log($options['login_logo']);
-
 		?>
 
 		<style type="text/css">
@@ -209,7 +227,25 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 			<?php if($options['login_custom_css']) echo sanitize_text_field($options['login_custom_css']);
 
 			?>
+			<?php
+				if ( $options['login_logo'] ):
+					if(is_array($options['login_logo'])):
+						$logo_id = $options['login_logo'][0];
+					else:
+						$logo_id = $options['login_logo'];
+					endif;
+					$logo_url = wp_get_attachment_image_src($logo_id, 'medium');
+					$this->log($logo_url);
+					$this->log($options['login_logo']);
+			?>
+					body.login div#login h1 a {
+						background-image: url('<?php echo $logo_url[0]; ?>');
+						width: <?php echo $logo_url[1]; ?>px;
+						height: <?php echo $logo_url[2]; ?>px;
+						background-size: auto;
+					}
 
+			<?php endif; ?>
 		</style>
 <?php
 

@@ -1,6 +1,6 @@
 <?php
 /*
-Title: Login Box
+Title: <h2>Login Box</h2>
 Setting: uabr_options
 Tab: Style
 */

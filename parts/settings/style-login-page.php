@@ -1,9 +1,11 @@
 <?php
 /*
-Title: Login Page
+Title: <hr/><h2>Customize Login Page</h2>
 Setting: uabr_options
 Tab: Style
 */
+
+$options = get_option( 'uabr_options' );
 
 // Background Color
 piklist( 'field', array(
@@ -13,16 +15,43 @@ piklist( 'field', array(
 	'help' => __( 'Set the default WordPress login background color.  To remove click the color picker, click Clear, and then save.' )
 ) );
 
-// Header Logo
+// Header Logo URL Link Title
 piklist( 'field', array(
+	'type'       => 'text',
+	'field'      => 'login_logo_url_title',
+	'label'      => __( 'Logo URL Title' ),
+	'help'       => __( 'Default the login logo link title is Powered by Wordpress, enter something here if you want to customize it.' ),
+	'attributes' => array(
+		'class' => 'regular-text'
+	)
+) );
+
+// Header Logo URL Link
+piklist( 'field', array(
+	'type'        => 'text',
+	'field'       => 'login_logo_url',
+	'label'       => __( 'Logo URL' ),
+	'help' => __( 'Default the login logo links to Wordpress.org, enter a URL here if you want to use a custom one.' ),
+	'value'       => home_url(),
+	'attributes'  => array(
+		'class' => 'regular-text'
+	)
+) );
+
+// Header Logo
+$logo_args = array(
 	'type'        => 'file',
 	'field'       => 'login_logo',
 	'label'       => 'Custom Logo',
-	'description' => '',
+	'help'        => 'You can add as many logos on this page as you would like, but only the logo farthest to the left will be used.  You can drag and drop to rearrange them.',
 	'options'     => array(
-		'basic'  => true
+		'title'  => 'Upload a custom Logo',
+		'button' => 'Add a Logo Image'
 	)
-) );
+);
+
+if($options['login_logo'][0]) $logo_args['description'] = 'Active Logo:';
+piklist( 'field', $logo_args );
 
 // Custom
 piklist( 'field', array(
