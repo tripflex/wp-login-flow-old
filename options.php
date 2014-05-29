@@ -115,7 +115,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 	 */
 	public static function get_options () {
 
-		if ( ! self::$options ) self::$options = self::get_options();
+		if ( ! self::$options ) self::$options = self::set_options();
 
 		return self::$options;
 	}
@@ -127,6 +127,8 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 		if ( ! $options ) $options = get_option( 'uabr_options' );
 		self::$options = $options;
+
+		return self::$options;
 	}
 
 	public function death_to_heartbeat () {
