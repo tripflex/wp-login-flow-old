@@ -235,8 +235,6 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 						$logo_id = $options['login_logo'];
 					endif;
 					$logo_url = wp_get_attachment_image_src($logo_id, 'medium');
-					$this->log($logo_url);
-					$this->log($options['login_logo']);
 			?>
 					body.login div#login h1 a {
 						background-image: url('<?php echo $logo_url[0]; ?>');
