@@ -10,6 +10,8 @@
  * @Last                Modified time: 24 18 10
  */
 
+require_once( 'piklist/piklist.php' );
+
 class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 	private static $debug = true;
@@ -17,8 +19,6 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 	private static $options;
 
 	function __construct () {
-
-		require_once( 'piklist/piklist.php' );
 
 		self::set_options();
 
@@ -29,6 +29,8 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 		add_action( 'admin_init', array( $this, 'preserve_rewrite_rules' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'death_to_heartbeat' ), 1 );
+		// Remove Piklist from WP menu
+		add_action( 'admin_menu', array($this, 'remove_menus') );
 
 	}
 
@@ -40,6 +42,10 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		}
 
 		return self::$instance;
+	}
+
+	public function remove_menus(){
+		remove_menu_page( 'piklist' );
 	}
 
 	public function options_updated ( $old_value, $new_value ) {
@@ -134,6 +140,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 		global $pagenow;
 		$this->log(__FUNCTION__, 'function');
+
 		if ( ! ( $_GET['page'] == parent::plugin_page && $_GET['tab'] == 'rewrite' ) && ! ( $pagenow == 'options.php' ) && ! ( $pagenow == 'users.php' ) ) {
 			$this->set_rewrite_rules();
 		}
@@ -169,19 +176,41 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 	public function login_css () {
 
 		$options = self::get_options();
-		if ( $options['responsive_width'][0] == 'enable' ) {
+
+		$this->log($options['login_logo']);
+
+		?>
+
+		<style type="text/css">
+
+			<?php if ( $options['responsive_width'][0] == 'enable' ): ?>
+			        @media (max-width: 1200px) { #login { width: 90% !important; } }
+			        @media (min-width: 1200px) { #login { width: 50% !important; } }
+			<?php endif; ?>
+
+			<?php if ( $options['login_bg_color'] ): ?>
+					body { background-color: <?php echo $options['login_bg_color']; ?> !important; }
+			<?php endif; ?>
+
+			<?php
+				$login_form_css = '#login form {';
+				if ( $options['login_box_bg_color'] ){
+					$login_form_css .= 'background-color: ' . $options['login_box_bg_color'] . ' !important;';
+				}
+				if ( $options['login_box_radius'] ){
+					$login_form_css .= 'border-radius: ' . $options['login_box_radius'] . $options['login_box_radius_type'] .' !important;';
+				}
+				$login_form_css .= '}';
+				echo sanitize_text_field($login_form_css);
 			?>
-			<style type="text/css">
-		        @media (max-width: 1200px) {
-			        #login { width: 90% !important; }
-			        }
 
-		        @media (min-width: 1200px) {
-			        #login { width: 50% !important; }
-			        }
-		    </style>
-		<?php
-		}
-	}
+			<?php if($options['login_custom_css']) echo sanitize_text_field($options['login_custom_css']);
 
-}
+			?>
+
+		</style>
+<?php
+
+	} // End login_css
+
+} // End User_Activate_by_Reset_Options
