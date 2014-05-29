@@ -4,7 +4,7 @@ Donate link: https://www.gittip.com/tripflex
 Tags: user, register, activate, reset, password, login, force, email, id, notification, registration, jobify, wp-job-manager, wp job manager
 Requires at least: 3.8
 Tested up to: 3.9.1
-Stable tag: 1.2.0
+Stable tag: 1.0.0
 License: GPLv3
 
 Require users to activate via email using the default WordPress password reset.
