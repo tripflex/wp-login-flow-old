@@ -1,8 +1,9 @@
 <?php
 /*
-Title: <hr/><h2>Customize Login Page</h2>
+Title: <h2>Customize Login Page</h2>
 Setting: uabr_options
 Tab: Style
+Order: 0
 */
 
 $options = get_option( 'uabr_options' );
