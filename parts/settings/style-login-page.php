@@ -1,6 +1,6 @@
 <?php
 /*
-Title: <h2>Customize Login Page</h2>
+Title: <div class="postbox"><h3 class="hndle">Customize Login Page</h3><div class="inside">
 Setting: uabr_options
 Tab: Style
 Order: 0
@@ -67,3 +67,4 @@ piklist( 'field', array(
 		'class' => 'text'
 	)
 ) );
+

@@ -26,7 +26,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		add_action( 'login_enqueue_scripts', array( $this, 'login_css' ) );
 		add_filter( 'register_form_fields', array( $this, 'remove_pw_field' ) );
 		add_filter( 'login_headerurl', array( $this, 'change_logo_url' ) );
-		add_filter( 'login_headerurl', array( $this, 'change_logo_url_title' ) );
+		add_filter( 'login_headertitle', array( $this, 'change_logo_url_title' ) );
 		add_action( 'update_option_uabr_options', array( $this, 'options_updated' ), 30, 2 );
 
 		add_action( 'admin_init', array( $this, 'preserve_rewrite_rules' ) );
