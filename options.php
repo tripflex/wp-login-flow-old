@@ -180,8 +180,8 @@ class WP_Login_Flow_Options extends WP_Login_Flow {
 	public function settings_page ( $pages ) {
 
 		$pages[] = array(
-			'page_title'  => __( 'Activation Settings' ),
-			'menu_title'  => __( 'Activation Settings' ),
+			'page_title'  => __( 'WP Login Flow' ),
+			'menu_title'  => __( 'WP Login Flow' ),
 			'capability'  => 'manage_options',
 			'sub_menu'    => 'users.php',
 			'menu_slug'   => parent::plugin_page,
