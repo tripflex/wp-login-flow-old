@@ -1,35 +1,37 @@
 === WP Login Flow ===
 Contributors: tripflex
 Donate link: https://www.gittip.com/tripflex
-Tags: user, register, activate, reset, password, login, force, email, id, notification, registration, jobify, wp-job-manager, wp job manager
+Tags: permalink, css, image, rewrite, wp-login, wp-login.php, custom, password, lost, forgot, customize, default, clean, form, redirect, template, logo, user, register, activate, reset, password, login, force, email, id, notification, registration, jobify, wp-job-manager, wp job manager, htaccess
 Requires at least: 3.8
 Tested up to: 3.9.1
 Stable tag: 1.0.0
 License: GPLv3
 
-Require users to activate via email using the default WordPress password reset.
+Complete WP Login (wp-login.php) flow control.  Customize wp-login.php, require users to activate email, custom email templates, custom rewrite (login, register, activate), and more!
 
 == Description ==
 
-Use this plugin to require users to activate their email address, and then set their password once email has been activated.  This will replace the default wp_new_user_notification which normally emails the user with their password.
+WP Login Flow is only plugin that will solve all of your wp-login needs.  Complete customization of the default wp-login.php page, with many other advanced features such as requiring users to activate their account via email, custom rewrite permalinks for all wp-login links, ability to force using custom permalinks instead of wp-login.php links (ie /register instead of wp-login.php?action=register), responsify the wp-login.php page, custom logo, link, background, login box, and more!
 
-Once you activate this plugin it will instead send them an email similar to the password reset email, with a link to the default password reset page to set their password.
+This plugin was created to keep things as clean, simple, and useful as possible.  The main bread and butter is the user email activation, which is integrated with the default password reset page.  What this means is users are required to "Activate" their account by using a link in the email to set their password.  Everyone knows email is insecure, so why would you ever email a user their password?  This plugin solves that problem, and helps you keep both you and your users safe.
 
 = Features =
 
 * Customized responsive wp-login.php page
-* Require Email Activation
-* Link in email standard WP password reset page to set users password
-* Send new activation/reset email by using standard password reset form
+* Require Email Activation (link in email standard WP password reset page to set users password)
+* Users can request new activation/reset email by using standard password reset form
 * Display "pending activation" error if pending account attempts to login (authenticate hook)
-
-= Planned Features =
-
-* Customize default WordPress login (color, logo, etc)
-* Custom activation email
-* Custom pending activation notice
-* Custom wp-login.php permalinks
-* Admin notification options
+* Custom logo on wp-login page
+* Custom link URL for logo on wp-login page
+* Custom background on wp-login page
+* Custom login box on wp-login page
+* Custom user defined CSS on wp-login page
+* Custom email templates (register, activate, lost/forgot password, etc)
+* Custom Name and Email Address for all Wordpress emails sent
+* Remove password field from register forms (Jobify, and others)
+* Custom rewrite for login, register, activate, and lost/forgot password
+* Force redirect from wp-login.php to custom permalinks
+* Custom login redirect based on user role
 
 [Read more about WP Login Flow](https://github.com/tripflex/wp-login-flow).
 
@@ -63,11 +65,17 @@ The manual installation method involves downloading the plugin and uploading it 
 
 == Screenshots ==
 
-1. Password Reset Page
-2. Email Preview
+1. Tabbed configuration screen
+2. Password Reset Page
+3. Email Preview
+4. Customized wp-login example
 
 == Changelog ==
 
 = 1.0.0 =
-( March 17, 2014 )
+* - June 6, 2014
+* Changed name to wp-login-flow
+* Numerous bug fixes, and additional features added
+* -
+* - March 17, 2014
 * Initial Creation
