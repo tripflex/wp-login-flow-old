@@ -30,7 +30,7 @@ Collapse: false
     ,'label' => __('Add File(s)','piklist')
     ,'description' => __('This is the basic upload field.','piklist')
     ,'options' => array(
-      'basic' => false
+      'basic' => true
     )
   ));
   

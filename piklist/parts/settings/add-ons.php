@@ -1,8 +1,7 @@
 <?php
 /*
 Title: Extend Piklist
-Setting: piklist_core
-Tab: Add-ons
+Setting: piklist_core_addons
 Order: 10
 */
 ?>

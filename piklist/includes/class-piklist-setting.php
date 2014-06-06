@@ -16,7 +16,6 @@ class PikList_Setting
   public static function _construct()
   {    
     add_action('admin_init', array('piklist_setting', 'register_settings'));
-
     add_filter('piklist_admin_pages', array('piklist_setting', 'admin_pages'));
   }
 
@@ -33,7 +32,7 @@ class PikList_Setting
     );
     
     $pages[] = array(
-      'page_title' => __('Piklist Settings', 'piklist')
+      'page_title' => __('Settings', 'piklist')
       ,'menu_title' => __('Settings', 'piklist')
       ,'capability' => defined('PIKLIST_SETTINGS_CAP') ? PIKLIST_SETTINGS_CAP : 'manage_options'
       ,'sub_menu' => 'piklist'
@@ -44,6 +43,20 @@ class PikList_Setting
       ,'default_tab' => 'General'
       ,'single_line' => true
     );
+
+    $pages[] = array(
+      'page_title' => __('Add-ons', 'piklist')
+      ,'menu_title' => __('Add-ons', 'piklist')
+      ,'capability' => defined('PIKLIST_SETTINGS_CAP') ? PIKLIST_SETTINGS_CAP : 'manage_options'
+      ,'sub_menu' => 'piklist'
+      ,'menu_slug' => 'piklist-core-addons'
+      ,'setting' => 'piklist_core_addons'
+      ,'menu_icon' => piklist_admin::responsive_admin() == true ? plugins_url('piklist/parts/img/piklist-icon.svg') : plugins_url('piklist/parts/img/piklist-icon.png') 
+      ,'page_icon' => plugins_url('piklist/parts/img/piklist-page-icon-32.png')
+      ,'default_tab' => 'Activate'
+      ,'single_line' => true
+    );
+
 
     return $pages;
   }

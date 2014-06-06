@@ -5,7 +5,7 @@
   
   $(document).ready(function()
   {  
-    $('body:not(.wp-admin.widgets-php)')
+    $('body')
       .piklistgroups()
       .piklistcolumns()
       .piklistmediaupload()
@@ -124,8 +124,8 @@
     {
       if (field.id && field.id.indexOf('__i__') > -1)
       {
-        var widget = $('input[value="' + fields_id + '"]:last').parents('.widget').attr('id');
-        var n = widget.charAt(widget.length - 1);
+        var widget = $('input[value="' + fields_id + '"]:last').parents('.widget').attr('id'),
+          n = widget.charAt(widget.length - 1);
         
         if (!isNaN(parseFloat(n)) && isFinite(n))
         {
@@ -143,7 +143,7 @@
         var field_id,
           type,
           key;
-        
+                    
         for (var i in field.conditions)
         {
           type = typeof field.conditions[i].type == 'undefined' ? 'toggle' : field.conditions[i].type;
@@ -207,9 +207,10 @@
             if (typeof id == 'undefined')
             {
               var original_id = $(this).attr('data-piklist-original-id'),
+                name = $(this).attr('name'),
                 $editor_wrap = $(this).parents('.wp-editor-wrap:first');
               
-              id = 'piklisteditor' + Math.random().toString(36).substr(2, 9);
+              id = Math.random().toString(36).substr(2, 9) + 'piklisteditor' + name.replace(/[^A-Z0-9]/g, '');
               
               $editor_wrap
                 .css('height', $editor_wrap.height() + 'px')
@@ -236,7 +237,9 @@
                 }
                 ,success: function(response) 
                 {
-                  $(response).insertAfter($editor_wrap);
+                  response = $.parseJSON(response);
+                  
+                  $(response.field).insertAfter($editor_wrap);
                 
                   $editor_wrap.remove();
                 
@@ -245,7 +248,7 @@
                 
                   tinyMCEPreInit.qtInit[id] = tinyMCEPreInit.mceInit[original_id];
                   tinyMCEPreInit.qtInit[id].id = id;
-
+                  
                   quicktags({
                     id: id
                   });
@@ -257,6 +260,31 @@
                   editor.focus();
                 }
               });
+            }
+            else
+            {
+              if (typeof tinyMCEPreInit.qtInit[id] == 'undefined')
+              {
+                for (original_id in tinyMCEPreInit.qtInit)
+                {
+                  if (original_id.substr(original_id.indexOf('piklisteditor') + ('piklisteditor').length) == id.substr(id.indexOf('piklisteditor') + ('piklisteditor').length))
+                  {
+                    tinyMCEPreInit.mceInit[id] = tinyMCEPreInit.mceInit[original_id];
+                    tinyMCEPreInit.mceInit[id].elements = id;
+            
+                    tinyMCEPreInit.qtInit[id] = tinyMCEPreInit.mceInit[original_id];
+                    tinyMCEPreInit.qtInit[id].id = id;
+                    
+                    break;
+                  }
+                }
+
+                quicktags({
+                  id: id
+                });
+                      
+                tinyMCE.execCommand('mceAddControl', false, id);
+              }
             }
           });
                     
@@ -302,7 +330,7 @@
         reset_selector = selector.replace(/\[[0-9]+(?!.*[0-9])\]/, '[' + index + ']'),
         field;
       
-      if (selector == reset_selector)
+        if (selector == reset_selector)
       {
         field = $(selector + ':eq(' + index + ')');
         if (field.length == 0)
@@ -483,7 +511,7 @@
 
           $element
             .siblings('label[for="' + $element.attr('name') + '"]:first, span.piklist-list-item-label')
-            .andSelf()
+            .addBack()
             .wrapAll('<div data-piklist-field-group="' + group + '" ' + (sub_group ? 'data-piklist-field-sub-group="' + sub_group + '"' : '') +' />');
          });
          
@@ -495,8 +523,10 @@
          var $element = $(this),
            group = $element.data('piklist-field-group'),
            sub_group = $element.data('piklist-field-sub-group'),
-           parent_selector = $element.parents('.piklist-field-list').length > 0 ? '.piklist-field-list' : '.piklist-field-list-item',
-           parent = $element.parents('div[data-piklist-field-group]:eq(0)');
+           list = $element.parents('.piklist-field-list').length > 0,
+           parent_selector = list ? '.piklist-field-list' : '.piklist-field-list-item',
+           parent = $element.parents('div[data-piklist-field-group]:eq(0)'),
+           wrap = $('<div data-piklist-field-group="' + group + '" ' + (sub_group ? 'data-piklist-field-sub-group="' + sub_group + '"' : '') +' />');
            
          if (parent.length > 0)
          {
@@ -509,11 +539,13 @@
          } 
          else
          {
+           wrap.css('display', list ? 'block' : 'inline-block');
+           
            $element
              .parents(parent_selector)
              .siblings('.piklist-label[for="' + $element.attr('name') + '"]:first')
-             .andSelf()
-             .wrapAll('<div data-piklist-field-group="' + group + '" ' + (sub_group ? 'data-piklist-field-sub-group="' + sub_group + '"' : '') +' />');
+             .addBack()
+             .wrapAll(wrap);
          }
        });
     }
@@ -628,7 +660,7 @@
             {
               $element
                 .siblings('label[for="' + $element.attr('name') + '"], .piklist-field-preview, .piklist-label-container')
-                .andSelf()
+                .addBack()
                 .wrapAll($wrapper);
             }
             else
@@ -1018,7 +1050,7 @@
           {
             $element
               .siblings('label[for="' + $element.attr('name') + '"]:first')
-              .andSelf()
+              .addBack()
               .wrapAll('<div data-piklist-field-columns="' + columns + '" />');
           }
         
@@ -1063,7 +1095,7 @@
                 {
                   $(this)
                     .siblings('.piklist-label[for="' + $element.attr('name') + '"]:first')
-                    .andSelf()
+                    .addBack()
                     .wrapAll('<div data-piklist-field-columns="' + columns + '" data-piklist-field-group="' + group + '" ' + (sub_group ? 'data-piklist-field-sub-group="' + sub_group + '"' : '') +' />');
                 }
                 
@@ -1130,7 +1162,7 @@
           .find('.piklist-field-column-first')
           .each(function()
           {
-            var row = $(this).nextUntil('.piklist-field-column-last').andSelf(),
+            var row = $(this).nextUntil('.piklist-field-column-last').addBack(),
               columns = row.add(row.last().next()),
               height = 0;
               

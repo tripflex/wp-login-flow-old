@@ -11,7 +11,7 @@
     
     if (isset($column['columns']) || !isset($column['label']))
     {
-      $column['template'] = 'field';
+      $column['template'] = isset($column['template']) ? $column['template'] : 'field';
       $column['child_field'] = true;
     }
     
@@ -33,13 +33,17 @@
         $field_name = $column['field'];
       }
 
-      if (isset($column['save_as']) && isset($value[$column['save_as']]))
+      if (isset($column['save_as']) && is_array($value) && isset($value[$column['save_as']]))
       {
         $stored_value = $value[$column['save_as']];
       }
-      else if (isset($value[$field_name]))
+      elseif (is_array($value) && isset($value[$field_name]))
       {
         $stored_value = $value[$field_name];
+      }
+      else
+      {
+        $stored_value = $value;
       }
 
       $_values = $stored_value;
@@ -137,6 +141,11 @@
         {
           $_field['field'] = $column['field'] . ':' . $column['index'] . ':' . $_field['field']; 
         }
+      }
+      
+      if (!empty($conditions))
+      {
+        $column['conditions'] = $conditions;
       }
       
       piklist_form::render_field($column);

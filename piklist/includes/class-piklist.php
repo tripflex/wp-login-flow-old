@@ -65,7 +65,7 @@ class PikList
       ,'/(h|bl)ouses$/i' => "$1ouse"
       ,'/(corpse)s$/i' => "$1"
       ,'/(us)es$/i' => "$1"
-      //,'/s$/i' => ""
+      ,'/s$/i' => ""
     )
     ,'irregular' => array(
       'move' => 'moves'
@@ -225,7 +225,14 @@ class PikList
       ob_start();
     }
 
-    foreach (array($wp_query->query_vars, $arguments) as $_object)
+    $_arguments = array($wp_query->query_vars);
+    
+    if (isset($arguments) && !empty($arguments))
+    {
+      array_push($_arguments, $arguments);
+    }
+
+    foreach ($_arguments as $_object)
     {
       foreach ($_object as $_key => $_value)
       {
@@ -258,7 +265,7 @@ class PikList
           include $_file;
         }
       }
-      else if ($loop)
+      elseif ($loop)
       {
         for ($i = 0; $i < count($arguments[$loop]); $i++)
         {    
@@ -267,7 +274,7 @@ class PikList
           include $_file;
         }
       }
-      else if (file_exists($_file))
+      elseif (file_exists($_file))
       {
         include $_file;
       }
@@ -456,7 +463,7 @@ class PikList
   public static function post_type_labels($label)
   {
     return array(
-      'name' => __(self::pluralize($label), 'piklist')
+      'name' => __(self::singularize($label), 'piklist')
       ,'singular_name' => __(self::singularize($label), 'piklist')
       ,'all_items' => __('All ' . self::pluralize($label), 'piklist')
       ,'add_new' => __('Add New', 'piklist')
@@ -583,7 +590,7 @@ class PikList
     }
   }
   
-  public static function key_path($array, $find, $map = null)
+  public static function array_path($array, $find, $map = null)
   {
     $path = array();
     
@@ -597,7 +604,7 @@ class PikList
       {
         if (is_array($data))
         {
-          if ($path = self::key_path($data, $find, $map))
+          if ($path = self::array_path($data, $find, $map))
           {
             $path[($map ? $map[count($path)] : null)] = $key;
             
@@ -608,6 +615,52 @@ class PikList
     }
 
     return null;
+  }
+  
+  public static function array_path_get($array, $path)
+  {
+    if (!$path)
+    {  
+      return false;
+    }
+    
+    $map = is_array($path) ? $path : explode('/', $path);
+    $found =& $array;
+    
+    foreach ($map as $part) 
+    {
+      if (!isset($found[$part]))
+      {
+        return null;
+      }
+      
+      $found = $found[$part];
+    }
+
+    return $found;
+  }
+
+  public static function array_path_set(&$array, $path, $value)
+  {
+    if (!$path)
+    {
+      return null;
+    }
+    
+    $map = is_array($path) ? $path : explode('/', $path);
+    $found =& $array;
+    
+    foreach ($map as $part)
+    {
+      if (!isset($found[$part]))
+      {
+        $found[$part] = array();
+      }
+      
+      $found =& $found[$part];
+    }
+
+    $found = $value;
   }
   
   public static function xml_to_array($xml) 
@@ -802,7 +855,7 @@ class PikList
     {
       return maybe_unserialize(current($object));
     }
-    else if (is_array($object))
+    elseif (is_array($object))
     {
       foreach ($object as $key => $value)
       {
@@ -812,7 +865,7 @@ class PikList
         {
           $object = current($value);
         }
-        else if (is_array($value))
+        elseif (is_array($value))
         {
           $object[$key] = self::object_value($value);
         }

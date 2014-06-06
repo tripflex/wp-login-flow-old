@@ -4,7 +4,7 @@ Title: Text Fields
 Description: this is the description
 Post Type: piklist_demo
 Order: 10
-Collapse: true
+Collapse: false
 */
 ?>
 

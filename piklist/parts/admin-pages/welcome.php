@@ -37,7 +37,7 @@ get_currentuserinfo();
 
   .wp-badge {
     color: #fdc0b0;
-    background: url('/wp-content/plugins/piklist/parts/img/piklist-icon-white.png') no-repeat center 32px #c82b00 !important;
+    background: url('<?php echo piklist::$urls['piklist']; ?>/parts/img/piklist-icon-white.png') no-repeat center 32px #c82b00 !important;
   }
 
   #mce-EMAIL {
@@ -177,7 +177,7 @@ get_currentuserinfo();
     <div>
       <h3>Post relationships</h3>
       <h4>You'll wish all relationships were this easy.</h4>
-      <p>Post relationships are standard with Piklist and easy to setup. Displaying them in your theme is even easier, since you can use the standard WordPress <code>query_posts</code> function.</p>
+      <p>Post relationships are standard with Piklist and easy to setup. Displaying them in your theme is even easier, since you can use the standard WordPress <code>get_posts</code> function.</p>
     </div>
     <div class="last-feature about-colors-img">
       <img class="screenshot" src="<?php echo plugins_url('piklist/parts/img/post-relationships@2x.jpg');?>">

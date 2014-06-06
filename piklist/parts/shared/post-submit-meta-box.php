@@ -192,15 +192,15 @@
               { // scheduled for publishing at a future date
                 $stamp = __('Scheduled for: <b>%1$s</b>', 'piklist');
               } 
-              else if ('publish' == $post->post_status || 'private' == $post->post_status) 
+              elseif ('publish' == $post->post_status || 'private' == $post->post_status) 
               { // already published
                 $stamp = __('Published on: <b>%1$s</b>', 'piklist');
               } 
-              else if ('0000-00-00 00:00:00' == $post->post_date_gmt) 
+              elseif ('0000-00-00 00:00:00' == $post->post_date_gmt) 
               { // draft, 1 or more saves, no date specified
                 $stamp = (isset($statuses['publish']) ? __('Publish', 'piklist') : __('Schedule', 'piklist')) . __(' <b>immediately</b>', 'piklist');
               } 
-              else if (time() < strtotime($post->post_date_gmt . ' +0000')) 
+              elseif (time() < strtotime($post->post_date_gmt . ' +0000')) 
               { // draft, 1 or more saves, future date specified
                 $stamp = __('Scheduled for: <b>%1$s</b>', 'piklist');
               } 
