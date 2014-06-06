@@ -1,4 +1,4 @@
-=== User Activate by Reset ===
+=== WP Login Flow ===
 Contributors: tripflex
 Donate link: https://www.gittip.com/tripflex
 Tags: user, register, activate, reset, password, login, force, email, id, notification, registration, jobify, wp-job-manager, wp job manager
@@ -31,7 +31,7 @@ Once you activate this plugin it will instead send them an email similar to the 
 * Custom wp-login.php permalinks
 * Admin notification options
 
-[Read more about User Activate by Reset](https://github.com/tripflex/wp-login-flow).
+[Read more about WP Login Flow](https://github.com/tripflex/wp-login-flow).
 
 = Documentation =
 
