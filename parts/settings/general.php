@@ -1,7 +1,7 @@
 <?php
 /*
 Title: General
-Setting: uabr_options
+Setting: wplf_options
 */
 
 // Responsive Width

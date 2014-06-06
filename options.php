@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @title               User Activation by Reset Options Page
+ * @title               WP Login Flow Options Page
  *
  * @author              Myles McNamara (get@smyl.es)
  * @copyright           Copyright (c) Myles McNamara 2013-2014
@@ -12,7 +12,7 @@
 
 require_once( 'piklist/piklist.php' );
 
-class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
+class WP_Login_Flow_Options extends WP_Login_Flow {
 
 	private static $debug = true;
 	private static $instance;
@@ -27,7 +27,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 		add_filter( 'register_form_fields', array( $this, 'remove_pw_field' ) );
 		add_filter( 'login_headerurl', array( $this, 'change_logo_url' ) );
 		add_filter( 'login_headertitle', array( $this, 'change_logo_url_title' ) );
-		add_action( 'update_option_uabr_options', array( $this, 'options_updated' ), 30, 2 );
+		add_action( 'update_option_wplf_options', array( $this, 'options_updated' ), 30, 2 );
 
 		add_action( 'admin_init', array( $this, 'preserve_rewrite_rules' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'death_to_heartbeat' ), 1 );
@@ -87,7 +87,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 			$query    = $_SERVER['QUERY_STRING'];
 			$date_ident = date( 's' );
 			$date_title = $date_ident . ' - ';
-			$plugin_title = '[' . User_Activate_by_Reset::plugin_page . ']:' . $date_title;
+			$plugin_title = '[' . WP_Login_Flow::plugin_page . ']:' . $date_title;
 
 			if ( $title ) $title = '{' . strtolower($title) . '}> ';
 			if ( $spacer ) error_log( $plugin_title . '   ---   ' . $date_ident . '   ---   ' );
@@ -145,7 +145,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 	 */
 	public static function set_options ( $options = NULL ) {
 
-		if ( ! $options ) $options = get_option( 'uabr_options' );
+		if ( ! $options ) $options = get_option( 'wplf_options' );
 		self::$options = $options;
 
 		return self::$options;
@@ -185,7 +185,7 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 			'capability'  => 'manage_options',
 			'sub_menu'    => 'users.php',
 			'menu_slug'   => parent::plugin_page,
-			'setting'     => 'uabr_options',
+			'setting'     => 'wplf_options',
 			'single_line' => false,
 			'default_tab' => 'General',
 			'save_text'   => 'Save Activation Settings'
@@ -249,4 +249,4 @@ class User_Activate_by_Reset_Options extends User_Activate_by_Reset {
 
 	} // End login_css
 
-} // End User_Activate_by_Reset_Options
+} // End WP_Login_Flow_Options

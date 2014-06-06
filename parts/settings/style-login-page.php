@@ -1,12 +1,12 @@
 <?php
 /*
 Title: <div class="postbox"><h3 class="hndle">Customize Login Page</h3><div class="inside">
-Setting: uabr_options
+Setting: wplf_options
 Tab: Style
 Order: 0
 */
 
-$options = get_option( 'uabr_options' );
+$options = get_option( 'wplf_options' );
 
 // Background Color
 piklist( 'field', array(

@@ -1,7 +1,7 @@
 <?php
 /*
 Title: <h1>Email Customization</h1>
-Setting: uabr_options
+Setting: wplf_options
 Tab: Email
 Order: 0
 */
@@ -32,7 +32,7 @@ piklist( 'field', array(
 piklist( 'field', array(
 	'type'       => 'checkbox',
 	'field'      => 'enable_email',
-	'help'       => 'If you want to use something other than wordpress@' . User_Activate_by_Reset::getDomain() . ', enable this field.',
+	'help'       => 'If you want to use something other than wordpress@' . WP_Login_Flow::get_domain() . ', enable this field.',
 	'label'      => 'From Email',
 	'choices'    => array(
 		'enable' => 'Enable<br> [field=custom_email]'
@@ -41,7 +41,7 @@ piklist( 'field', array(
 		array(
 			'type'  => 'text',
 			'field' => 'custom_email',
-			'value' => 'wordpress@' . User_Activate_by_Reset::getDomain(),
+			'value' => 'wordpress@' . WP_Login_Flow::get_domain(),
 			'embed' => true,
 			'attributes' => array(
 				'class' => 'regular-text'

@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: User Activate by Password Reset
- * Plugin URI:  https://github.com/tripflex/user-activate-by-reset
+ * Plugin Name: WP Login Flow
+ * Plugin URI:  https://github.com/tripflex/wp-login-flow
  * Description: Use the default WordPress password reset as activation for new user
  * Author:      Myles McNamara
  * Contributors: Myles McNamara
  * Author URI:  http://smyl.es
  * Version:     1.0.0
  * Plugin Type: Piklist
- * Text Domain: user_activate_by_reset
- * GitHub Plugin URI: tripflex/user-activate-by-reset
+ * Text Domain: wp_login_flow
+ * GitHub Plugin URI: tripflex/wp-login-flow
  * GitHub Branch:   master
  */
 
@@ -19,28 +19,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Set the version of this plugin
-if ( ! defined( 'USER_ACTIVATE_BY_RESET' ) ) {
-	define( 'USER_ACTIVATE_BY_RESET', '1.0.0' );
+if ( ! defined( 'WP_LOGIN_FLOW' ) ) {
+	define( 'WP_LOGIN_FLOW', '1.0.0' );
 }
 
 // Define plugin URL and path
-define( 'USER_ACTIVATE_BY_RESET_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
-define( 'USER_ACTIVATE_BY_RESET_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+define( 'WP_LOGIN_FLOW_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
+define( 'WP_LOGIN_FLOW_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
-require_once( USER_ACTIVATE_BY_RESET_PLUGIN_DIR . '/options.php' );
+require_once( WP_LOGIN_FLOW_PLUGIN_DIR . '/options.php' );
 
 /**
- * Class User_Activate_by_Reset
+ * Class WP_Login_Flow
  * @version 1.0.0
  */
-class User_Activate_by_Reset {
+class WP_Login_Flow {
 
 	const version           = '1.0.0';
-	const activation_status = 'uabr_activated';
-	const plugin_page       = 'uabr-settings';
-	const plugin_slug       = 'user-activate-by-reset';
+	const activation_status = 'wplf_activated';
+	const plugin_page       = 'wplf-settings';
+	const plugin_slug       = 'wp-login-flow';
 	public static  $wp_login    = 'wp-login.php';
-	public static  $plugin_slug = 'user-activate-by-reset';
+	public static  $plugin_slug = 'wp-login-flow';
 	public static  $locale_password_set;
 	public static  $locale_pending_activation_notice;
 	public static  $locale_thankyou_for_reg;
@@ -51,7 +51,7 @@ class User_Activate_by_Reset {
 
 	public function __construct () {
 
-		self::setDefaultLang();
+		self::set_default_lang();
 		add_action( 'admin_notices', array( $this, 'plugin_activate' ) );
 		add_action( 'set_auth_cookie', array( $this, 'set_auth_cookie' ), 20, 5 );
 		add_action( 'authenticate', array( $this, 'login_check_activation' ), 30, 3 );
@@ -59,21 +59,21 @@ class User_Activate_by_Reset {
 		add_filter( 'wp_login_errors', array( $this, 'wp_login_errors' ), 10, 2 );
 		add_filter( 'wp_mail_from', array( $this, 'mail_from' ) );
 		add_filter( 'wp_mail_from_name', array( $this, 'mail_from_name' ) );
-		User_Activate_by_Reset_Options::get_instance();
+		WP_Login_Flow_Options::get_instance();
 
 	}
 
-	public static function setDefaultLang () {
+	public static function set_default_lang () {
 
-		self::setLocalePasswordSet( 'Thank you for activating your account and setting your password!' );
-		self::setLocalePendingActivationNotice( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . wp_lostpassword_url() . '">password reset</a> for a new activation code.' );
-		self::setLocaleThankyouForReg( 'Thank you for registering.  Please check your email for your activation link.<br><br>If you do not receive the email please request a <a href="' . wp_lostpassword_url() . '">password reset</a> to have the email sent again.' );
+		self::set_locale_password_set( 'Thank you for activating your account and setting your password!' );
+		self::set_locale_pending_activation_notice( '<strong>ERROR</strong>: Your account is still pending activation, please check your email, or you can request a <a href="' . wp_lostpassword_url() . '">password reset</a> for a new activation code.' );
+		self::set_locale_thank_you_for_reg( 'Thank you for registering.  Please check your email for your activation link.<br><br>If you do not receive the email please request a <a href="' . wp_lostpassword_url() . '">password reset</a> to have the email sent again.' );
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public static function getDomain () {
+	public static function get_domain () {
 
 		if ( ! self::$domain ) {
 			$parse        = parse_url( home_url() );
@@ -86,7 +86,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @return mixed
 	 */
-	public static function getMailFrom () {
+	public static function get_mail_from () {
 
 		return self::$mail_from;
 	}
@@ -94,7 +94,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @param mixed $mail_from
 	 */
-	public static function setMailFrom ( $mail_from ) {
+	public static function set_mail_from ( $mail_from ) {
 
 		self::$mail_from = $mail_from;
 	}
@@ -102,7 +102,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @return mixed
 	 */
-	public static function getMailFromName () {
+	public static function get_mail_from_name () {
 
 		return self::$mail_from_name;
 	}
@@ -110,7 +110,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @param mixed $mail_from_name
 	 */
-	public static function setMailFromName ( $mail_from_name ) {
+	public static function set_mail_from_name ( $mail_from_name ) {
 
 		self::$mail_from_name = $mail_from_name;
 	}
@@ -119,7 +119,7 @@ class User_Activate_by_Reset {
 	 * @param      $user_id
 	 * @param bool $activated
 	 */
-	public static function setActivated ( $user_id, $activated = true ) {
+	public static function set_activated ( $user_id, $activated = true ) {
 
 		if ( $activated ) $activated = 'active';
 		if ( ! $activated ) $activated = 'pending';
@@ -140,8 +140,8 @@ class User_Activate_by_Reset {
 	 */
 	public static function plugin_activate () {
 
-		if ( USER_ACTIVATE_BY_RESET != get_option( 'User_Activate_by_Reset' ) ) {
-			update_option( 'User_Activate_by_Reset', USER_ACTIVATE_BY_RESET );
+		if ( WP_LOGIN_FLOW != get_option( 'WP_Login_Flow' ) ) {
+			update_option( 'WP_Login_Flow', WP_LOGIN_FLOW );
 			$html = '<div class="updated">';
 			$html .= '<p>';
 			$html .= __( 'You are now requiring users to activate their
@@ -158,13 +158,13 @@ class User_Activate_by_Reset {
 	 */
 	public static function plugin_deactivate () {
 
-		delete_option( 'User_Activate_by_Reset' );
+		delete_option( 'WP_Login_Flow' );
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public static function getLocalePasswordSet () {
+	public static function get_locale_password_set () {
 
 		return self::$locale_password_set;
 	}
@@ -174,7 +174,7 @@ class User_Activate_by_Reset {
 	 *
 	 * @since 1.0.0
 	 */
-	public static function setLocalePasswordSet ( $locale_password_set ) {
+	public static function set_locale_password_set ( $locale_password_set ) {
 
 		self::$locale_password_set = __( $locale_password_set );
 	}
@@ -183,14 +183,14 @@ class User_Activate_by_Reset {
 
 	public function mail_from ( $email ) {
 
-		self::setMailFrom( $email );
+		self::set_mail_from( $email );
 
 		return $email;
 	}
 
 	public function mail_from_name ( $name ) {
 
-		self::setMailFromName( $name );
+		self::set_mail_from_name( $name );
 
 		return $name;
 	}
@@ -204,7 +204,7 @@ class User_Activate_by_Reset {
 	public function wp_login_errors ( $errors, $redirect_to ) {
 
 		if ( ( $_GET['registration'] == 'complete' ) && ( $_GET['activation'] == 'pending' ) ) {
-			$errors->add( 'registered_activate', self::getLocaleThankyouForReg(), 'message' );
+			$errors->add( 'registered_activate', self::get_locale_thank_you_for_reg(), 'message' );
 		}
 
 		return $errors;
@@ -213,7 +213,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @return mixed
 	 */
-	public static function getLocaleThankyouForReg () {
+	public static function get_locale_thank_you_for_reg () {
 
 		return self::$locale_thankyou_for_reg;
 	}
@@ -221,7 +221,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @param mixed $locale_thankyou_for_reg
 	 */
-	public static function setLocaleThankyouForReg ( $locale_thankyou_for_reg ) {
+	public static function set_locale_thank_you_for_reg ( $locale_thankyou_for_reg ) {
 
 		self::$locale_thankyou_for_reg = __( $locale_thankyou_for_reg );
 	}
@@ -244,9 +244,9 @@ class User_Activate_by_Reset {
 
 		$user_id = $user_data->ID;
 
-		if ( ! User_Activate_by_Reset::isActivated( $user_id ) ) {
+		if ( ! WP_Login_Flow::is_activated( $user_id ) ) {
 			$user = new WP_Error();
-			$user->add( 'pendingactivation', self::getLocalePendingActivationNotice() );
+			$user->add( 'pendingactivation', self::get_locale_pending_activation_notice() );
 		}
 
 		return $user;
@@ -257,7 +257,7 @@ class User_Activate_by_Reset {
 	 *
 	 * @return bool
 	 */
-	public static function isActivated ( $user_id ) {
+	public static function is_activated ( $user_id ) {
 
 		$status = get_user_option( self::activation_status, $user_id );
 		if ( $status == 'pending' ) {
@@ -270,7 +270,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @return mixed
 	 */
-	public static function getLocalePendingActivationNotice () {
+	public static function get_locale_pending_activation_notice () {
 
 		return self::$locale_pending_activation_notice;
 	}
@@ -279,7 +279,7 @@ class User_Activate_by_Reset {
 	 * @param mixed $locale_pending_activation_notice
 	 *
 	 */
-	public static function setLocalePendingActivationNotice ( $locale_pending_activation_notice ) {
+	public static function set_locale_pending_activation_notice ( $locale_pending_activation_notice ) {
 
 		self::$locale_pending_activation_notice = __( $locale_pending_activation_notice );
 	}
@@ -294,8 +294,8 @@ class User_Activate_by_Reset {
 	public function set_auth_cookie ( $auth_cookie, $expire, $expiration, $user_id, $scheme ) {
 
 		// Exit function is user is already activated
-		if ( ! User_Activate_by_Reset::isActivated( $user_id ) ) {
-			wp_redirect( home_url( self::getWpLogin() . '?registration=complete&activation=pending' ) );
+		if ( ! WP_Login_Flow::is_activated( $user_id ) ) {
+			wp_redirect( home_url( self::get_wplogin() . '?registration=complete&activation=pending' ) );
 			exit();
 		}
 
@@ -304,7 +304,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @return string
 	 */
-	public static function getWpLogin () {
+	public static function get_wplogin () {
 
 		return self::$wp_login;
 	}
@@ -312,7 +312,7 @@ class User_Activate_by_Reset {
 	/**
 	 * @param string $wp_login
 	 */
-	public static function setWpLogin ( $wp_login ) {
+	public static function set_wp_login ( $wp_login ) {
 
 		self::$wp_login = $wp_login;
 	}
@@ -336,7 +336,7 @@ class User_Activate_by_Reset {
 		return $plugin_meta;
 	}
 
-} // End User_Activate_by_Reset Class
+} // End WP_Login_Flow Class
 
 // Prevent Wordpress from sending default notification, instead use our custom one
 if ( ! function_exists( 'wp_new_user_notification' ) ) {
@@ -369,13 +369,13 @@ if ( ! function_exists( 'wp_new_user_notification' ) ) {
 		$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user_login ) );
 
 		// Set option needs to be activated
-		User_Activate_by_Reset::setActivated( $user_id, false );
+		WP_Login_Flow::set_activated( $user_id, false );
 
 		$message = __( 'Thank you for registering your account:' ) . "\r\n\r\n";
 		$message .= network_home_url( '/' ) . "\r\n\r\n";
 		$message .= sprintf( __( 'Username: %s' ), $user_login ) . "\r\n\r\n";
 		$message .= __( 'In order to set your password and access the site, please visit the following address:' ) . "\r\n\r\n";
-		$message .= '<' . network_site_url( User_Activate_by_Reset::getWpLogin() . "?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . ">\r\n";
+		$message .= '<' . network_site_url( WP_Login_Flow::get_wplogin() . "?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . ">\r\n";
 
 		if ( is_multisite() ) {
 			$blogname = $GLOBALS['current_site']->site_name;
@@ -416,9 +416,9 @@ if ( ! function_exists( 'wp_password_change_notification' ) ) :
 	function wp_password_change_notification ( &$user ) {
 
 		// Check is password reset was triggered by user activating account and setting password
-		if ( ! User_Activate_by_Reset::isActivated( $user->ID ) ) {
-			User_Activate_by_Reset::setActivated( $user->ID );
-			login_header( __( 'Password Saved' ), '<p class="message reset-pass">' . User_Activate_by_Reset::getLocalePasswordSet() . '<br>You can now <a href="' . esc_url( wp_login_url() ) . '">' . __( 'Log in' ) . '</a></p>' );
+		if ( ! WP_Login_Flow::is_activated( $user->ID ) ) {
+			WP_Login_Flow::set_activated( $user->ID );
+			login_header( __( 'Password Saved' ), '<p class="message reset-pass">' . WP_Login_Flow::get_locale_password_set() . '<br>You can now <a href="' . esc_url( wp_login_url() ) . '">' . __( 'Log in' ) . '</a></p>' );
 			login_footer();
 			exit;
 		}
@@ -435,6 +435,6 @@ if ( ! function_exists( 'wp_password_change_notification' ) ) :
 	}
 endif;
 
-register_deactivation_hook( __FILE__, array( 'User_Activate_by_Reset', 'plugin_deactivate' ) );
+register_deactivation_hook( __FILE__, array( 'WP_Login_Flow', 'plugin_deactivate' ) );
 
-add_action( 'init', array( 'User_Activate_by_Reset', 'instance' ) );
+add_action( 'init', array( 'WP_Login_Flow', 'instance' ) );

@@ -1,7 +1,7 @@
 <?php
 /*
 Title: <hr/><h2>Email Templates</h2>
-Setting: uabr_options
+Setting: wplf_options
 Tab: Email
 Order: 1
 */

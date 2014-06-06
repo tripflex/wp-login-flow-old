@@ -1,7 +1,7 @@
 <?php
 /*
 Title: <hr/><h2>Login Box</h2>
-Setting: uabr_options
+Setting: wplf_options
 Tab: Style
 Order: 1
 */

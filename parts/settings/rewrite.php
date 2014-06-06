@@ -1,7 +1,7 @@
 <?php
 /*
 Title: <h2>Custom Rewrite Settings</h2>
-Setting: uabr_options
+Setting: wplf_options
 Tab: Rewrite
 */
 
@@ -19,7 +19,7 @@ piklist( 'field', array(
 	'label'   => 'Login',
 	'description' => 'Default: <code>' . home_url() . '/wp-login.php</code>',
 	'attributes' => array(
-		'class' => 'uabr_rewrite_input'
+		'class' => 'wplf_rewrite_input'
 	),
 	'choices' => array(
 		'enable' => 'Enable<br><code>' . home_url() . '/</code>[field=login_rewrite]'

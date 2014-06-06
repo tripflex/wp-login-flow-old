@@ -31,19 +31,19 @@ Once you activate this plugin it will instead send them an email similar to the 
 * Custom wp-login.php permalinks
 * Admin notification options
 
-[Read more about User Activate by Reset](https://github.com/tripflex/user-activate-by-reset).
+[Read more about User Activate by Reset](https://github.com/tripflex/wp-login-flow).
 
 = Documentation =
 
-Documentation will be maintained on the [GitHub Wiki here](https://github.com/tripflex/user-activate-by-reset/wiki).
+Documentation will be maintained on the [GitHub Wiki here](https://github.com/tripflex/wp-login-flow/wiki).
 
 = Contributing and reporting bugs =
 
-You can contribute code and localizations to this plugin via GitHub: [https://github.com/tripflex/user-activate-by-reset](https://github.com/tripflex/user-activate-by-reset)
+You can contribute code and localizations to this plugin via GitHub: [https://github.com/tripflex/wp-login-flow](https://github.com/tripflex/wp-login-flow)
 
 = Support =
 
-If you spot a bug, you can of course log it on [Github](https://github.com/tripflex/user-activate-by-reset)
+If you spot a bug, you can of course log it on [Github](https://github.com/tripflex/wp-login-flow)
 
 Or contact me at myles@smyl.es
 
