@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP Login Flow
  * Plugin URI:  https://github.com/tripflex/wp-login-flow
- * Description: Use the default WordPress password reset as activation for new user
+ * Description: Complete WP Login (wp-login.php) flow control.  Customize wp-login.php, require users to activate email, custom email templates, custom rewrite (login, register, activate), and more!
  * Author:      Myles McNamara
  * Contributors: Myles McNamara
  * Author URI:  http://smyl.es
