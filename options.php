@@ -17,6 +17,7 @@ class WP_Login_Flow_Options extends WP_Login_Flow {
 	private static $debug = true;
 	private static $instance;
 	private static $options;
+	private static $prevent_rewrite;
 
 	function __construct () {
 
@@ -163,9 +164,13 @@ class WP_Login_Flow_Options extends WP_Login_Flow {
 		global $pagenow;
 		$this->log(__FUNCTION__, 'function');
 
-		if ( ! ( $_GET['page'] == parent::plugin_page && $_GET['tab'] == 'rewrite' ) && ! ( $pagenow == 'options.php' ) && ! ( $pagenow == 'users.php' ) ) {
+		do_action('wplf_pre_set_rewrite_rules');
+
+		if ( ! ( $_GET['page'] == parent::plugin_page && $_GET['tab'] == 'rewrite' ) && ! ( $pagenow == 'options.php' ) && ! ( $pagenow == 'users.php' ) && ! ( self::get_prevent_rewrite() )) {
 			$this->set_rewrite_rules();
 		}
+
+		do_action('wplf_post_set_rewrite_rules');
 	}
 
 	public function remove_pw_field ( $fields ) {
@@ -193,6 +198,14 @@ class WP_Login_Flow_Options extends WP_Login_Flow {
 
 		return $pages;
 
+	}
+
+	public static function get_prevent_rewrite(){
+		return self::$prevent_rewrite;
+	}
+
+	public static function set_prevent_rewrite( $prevent ){
+		self::$prevent_rewrite = $prevent;
 	}
 
 	public function login_css () {

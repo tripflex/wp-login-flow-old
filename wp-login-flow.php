@@ -158,7 +158,11 @@ class WP_Login_Flow {
 	 */
 	public static function plugin_deactivate () {
 
+		WP_Login_Flow_Options::set_prevent_rewrite(true);
+		add_action('wplf_post_set_rewrite_rules', 'flush_rewrite_rules');
+
 		delete_option( 'WP_Login_Flow' );
+
 	}
 
 	/**
