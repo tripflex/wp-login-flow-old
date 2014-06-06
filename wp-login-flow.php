@@ -159,9 +159,17 @@ class WP_Login_Flow {
 	public static function plugin_deactivate () {
 
 		WP_Login_Flow_Options::set_prevent_rewrite(true);
-		add_action('wplf_post_set_rewrite_rules', 'flush_rewrite_rules');
+		flush_rewrite_rules();
+
+	}
+
+	/**
+	 *
+	 */
+	public static function plugin_uninstall () {
 
 		delete_option( 'WP_Login_Flow' );
+		delete_option( 'wplf_options' );
 
 	}
 
@@ -440,5 +448,6 @@ if ( ! function_exists( 'wp_password_change_notification' ) ) :
 endif;
 
 register_deactivation_hook( __FILE__, array( 'WP_Login_Flow', 'plugin_deactivate' ) );
+register_uninstall_hook( __FILE__, array( 'WP_Login_Flow', 'plugin_uninstall' ) );
 
 add_action( 'init', array( 'WP_Login_Flow', 'instance' ) );
