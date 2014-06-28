@@ -1,3 +1,5 @@
+** NOTICE ** this version will not function correctly yet, if you need a functional version please use the `piklist` branch.  This notice will be removed when the master branch is functional.
+
 === WP Login Flow ===
 Contributors: tripflex
 Donate link: https://www.gittip.com/tripflex
