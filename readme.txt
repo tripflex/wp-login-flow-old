@@ -1,3 +1,9 @@
+THIS IS THE OLD REPOSITORY, DO NOT USE THIS VERSION AS IT IS NOT FUNCTIONAL, USE THE VERSION FROM HERE:
+
+https://github.com/tripflex/wp-login-flow
+
+
+
 ** NOTICE ** this version will not function correctly yet, if you need a functional version please use the `piklist` branch.  This notice will be removed when the master branch is functional.
 
 === WP Login Flow ===
